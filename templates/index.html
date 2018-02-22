@@ -1,10 +1,11 @@
 <title>noidea</title>
 <head>
+	<script>
+	// TODO: add logic to start playing the media here
+	</script>
 </head>
 <body>
-	<ul>
 	{% for item in items %}
-	  <li><img src={{ item.poster }} />{{ item.name }}</li>
+	 <div id={{ item.name }}><img src={{ item.poster }} /><br />{{ item.name }} <p /></div>
 	{% endfor %}
-	</ul>
 </body>
