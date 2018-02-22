@@ -19,12 +19,9 @@ env = jinja2.Environment(
 ### PAGES ###
 @app.route("/")
 def page():
-	##-----------------------
 	template = env.get_template('index.html')
-	##-----------------------
 	
 	itemlist = get_all_movies()
-	
 	return template.render(items=itemlist)
 
 @app.route("/shows/")
