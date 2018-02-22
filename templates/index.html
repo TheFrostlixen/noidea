@@ -1,0 +1,10 @@
+<title>noidea</title>
+<head>
+</head>
+<body>
+	<ul>
+	{% for item in items %}
+	  <li><img src={{ item.poster }} />{{ item.name }}</li>
+	{% endfor %}
+	</ul>
+</body>
