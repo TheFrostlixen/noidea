@@ -11,7 +11,7 @@ poster_dir = r".\static\movies\posters"
 
 app = Flask(__name__)
 env = jinja2.Environment(
-	loader=jinja2.FileSystemLoader(r"C:\bin\noidea\templates"),
+	loader=jinja2.FileSystemLoader(r".\templates"),
 	autoescape=jinja2.select_autoescape(['html', 'xml'])
 )
 
