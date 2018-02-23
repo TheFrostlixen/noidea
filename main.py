@@ -3,7 +3,7 @@ import jinja2
 import json
 from flask import Flask
 from os import walk
-from os.path import splitext
+from os.path import splitext, basename
 
 
 movie_dir = r".\static\movies"
@@ -18,11 +18,17 @@ env = jinja2.Environment(
 
 ### PAGES ###
 @app.route("/")
-def page():
+def index():
 	template = env.get_template('index.html')
 	
 	itemlist = get_all_movies()
 	return template.render(items=itemlist)
+
+@app.route("/play/")
+def play():
+	# get parameter -> media
+	# execute the media passed to the page
+	return 0
 
 @app.route("/shows/")
 def json_test():
@@ -37,9 +43,7 @@ def get_all_movies():
 	files = get_files( movie_dir )
 	movie_list = []
 	for file in files:
-		name = splitext(file)[0]
-		poster = poster_dir + "\\" + name + ".bmp"
-		item = Movie(name, poster, file)
+		item = Movie(file)
 		movie_list.append(item)
 	return movie_list
 
@@ -58,16 +62,30 @@ def get_dirs(dirname):
 	return dirs
 
 
-### OTHER SHIT ###
+### CLASSES ###
 class Movie:
-	name = ''
-	poster = ''
-	file = ''
-	
 	def __init__(self, name, poster, file):
 		self.name = name
 		self.poster = poster
 		self.file = file
+		
+	def __init__(self, file):
+		self.file = file
+		self.name = splitext(basename(file))[0]
+		self.find_poster(self.name)
+		
+	def find_poster(self, search):
+		self.poster = poster_dir + "\\" + search + ".bmp"
+
+
+
+
+
+
+
+
+
+
 
 
 
