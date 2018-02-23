@@ -7,7 +7,7 @@ from os.path import splitext, basename
 
 
 movie_dir = r".\static\movies"
-poster_dir = r".\static\posters"
+poster_dir = r".\static\movies\posters"
 
 app = Flask(__name__)
 env = jinja2.Environment(
