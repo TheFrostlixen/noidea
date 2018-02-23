@@ -1,11 +1,15 @@
 <title>noidea</title>
 <head>
 	<script>
-	// TODO: add logic to start playing the media here
+	function open_media(media_item) {
+		// TODO: add logic to start playing the media here
+		alert(media_item);
+	}
 	</script>
+	<link rel="stylesheet" href="./static/css/noidea.css">
 </head>
 <body>
-	{% for item in items %}
-	 <div id={{ item.name }}><img src={{ item.poster }} /><br />{{ item.name }} <p /></div>
-	{% endfor %}
+  {% for item in items %}
+	<div class="item" id={{ item.name }} onclick="open_media('{{ item.file }}')"><img src={{ item.poster }} />{{ item.name }} </div>
+  {% endfor %}
 </body>
