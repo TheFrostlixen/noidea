@@ -3,13 +3,13 @@ import base64
 import cv2
 import jinja2
 import json
-from flask import Flask
-from os import walk
-from os.path import splitext, basename
+from flask import Flask, request
+from os import walk, system
+from os.path import splitext, basename, isfile, abspath
 
 
-movie_dir = r"./static/movies"
-poster_dir = r"./static/movies/posters"
+movie_dir = r"./static/movies/"
+poster_dir = r"./static/movies/posters/"
 
 app = Flask(__name__)
 env = jinja2.Environment(
@@ -28,9 +28,10 @@ def index():
 
 @app.route("/play/")
 def play():
-	# get parameter -> media
-	# execute the media passed to the page
-	return 0
+	template = env.get_template('play.html')
+	media_name = request.args.get('media', default='error', type=str)
+	#system('start "' + media_name + '"')
+	return template.render(media_name=media_name)
 
 @app.route("/shows/")
 def json_test():
@@ -51,17 +52,17 @@ def get_all_movies():
 
 def get_files(dirname):
 	files = []
-	for (base_dir, b, filenames) in walk(dirname):
+	for (base_dir, b, filenames) in walk( abspath(dirname) ):
 		files.extend(filenames)
 		break
-	return [base_dir + '//' + c for c in files]
+	return [base_dir + "\\" + c for c in files]
 
 def get_dirs(dirname):
 	dirs  = []
-	for (base_dir, dirnames, c) in walk(dirname):
+	for (base_dir, dirnames, c) in walk( abspath(dirname) ):
 		dirs.extend(dirnames)
 		break
-	return [base_dir + '//' + c for c in dirs]
+	return [base_dir + "\\" + c for c in dirs]
 
 
 ### CLASSES ###
@@ -74,31 +75,27 @@ class Movie:
 	def __init__(self, file):
 		self.file = file
 		self.name = splitext(basename(file))[0]
-		self.find_poster(file)
+		self.find_poster(file, self.name)
 		
-	def find_poster(self, filename):
+	def generate_poster(self, filename, poster_name):
 		threshold = 10
 		thumb_width = 240
 		thumb_height = 320
 		
 		vcap = cv2.VideoCapture(filename)
 		res, im_ar = vcap.read()
-		while im_ar.mean() < threshold and res:
+		while im_ar.mean() < 10 and res:
 			  res, im_ar = vcap.read()
-		im_ar = cv2.resize(im_ar, (thumb_width, thumb_height), 0, 0, cv2.INTER_LINEAR)
-		res, thumb_buf = cv2.imencode('.png', im_ar)
-		# '.jpeg' etc are permitted
-		self.poster = base64.b64encode( thumb_buf ).decode('utf8')
+		im_ar = cv2.resize(im_ar, (240, 320), 0, 0, cv2.INTER_LINEAR)
+		cv2.imwrite(poster_name, im_ar)
+		print('created poster ' + poster_name)
 
-
-
-
-
-
-
-
-
-
+	def find_poster(self, filename, name):
+		poster_name = poster_dir + name + ".png"
+		if not isfile(poster_name):
+			self.generate_poster(filename, poster_name)
+		
+		self.poster = poster_name
 
 
 
