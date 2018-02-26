@@ -75,7 +75,7 @@ class Movie:
 		self.find_poster(self.name)
 		
 	def find_poster(self, search):
-		self.poster = poster_dir + "\\" + search + ".bmp"
+		self.poster = poster_dir + "\\" + search.replace(' ', '%20') + ".bmp"
 
 
 
