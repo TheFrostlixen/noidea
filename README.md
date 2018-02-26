@@ -4,4 +4,4 @@ Made to display your media via a non-buffered connection to your TV. Set it up o
 
 
 ### Necessary software
-This project uses Python, Jinja2, and Flask. Get those and you're pretty much good to go.
+This project uses Python (OpenCV, Jinja2, and Flask). Get those and you're pretty much good to go.

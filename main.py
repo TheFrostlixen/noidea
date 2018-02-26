@@ -1,4 +1,6 @@
 # Non-buffered Ostensibly Instant Dedicated Everything Archive
+import base64
+import cv2
 import jinja2
 import json
 from flask import Flask
@@ -6,12 +8,12 @@ from os import walk
 from os.path import splitext, basename
 
 
-movie_dir = r".\static\movies"
-poster_dir = r".\static\movies\posters"
+movie_dir = r"./static/movies"
+poster_dir = r"./static/movies/posters"
 
 app = Flask(__name__)
 env = jinja2.Environment(
-	loader=jinja2.FileSystemLoader(r".\templates"),
+	loader=jinja2.FileSystemLoader(r"./templates"),
 	autoescape=jinja2.select_autoescape(['html', 'xml'])
 )
 
@@ -49,17 +51,17 @@ def get_all_movies():
 
 def get_files(dirname):
 	files = []
-	for (a, b, filenames) in walk(dirname):
+	for (base_dir, b, filenames) in walk(dirname):
 		files.extend(filenames)
 		break
-	return filenames
+	return [base_dir + '//' + c for c in files]
 
 def get_dirs(dirname):
 	dirs  = []
-	for (a, dirnames, c) in walk(dirname):
+	for (base_dir, dirnames, c) in walk(dirname):
 		dirs.extend(dirnames)
 		break
-	return dirs
+	return [base_dir + '//' + c for c in dirs]
 
 
 ### CLASSES ###
@@ -72,12 +74,21 @@ class Movie:
 	def __init__(self, file):
 		self.file = file
 		self.name = splitext(basename(file))[0]
-		self.find_poster(self.name)
+		self.find_poster(file)
 		
-	def find_poster(self, search):
-		self.poster = poster_dir + "\\" + search.replace(' ', '%20') + ".bmp"
-
-
+	def find_poster(self, filename):
+		threshold = 10
+		thumb_width = 240
+		thumb_height = 320
+		
+		vcap = cv2.VideoCapture(filename)
+		res, im_ar = vcap.read()
+		while im_ar.mean() < threshold and res:
+			  res, im_ar = vcap.read()
+		im_ar = cv2.resize(im_ar, (thumb_width, thumb_height), 0, 0, cv2.INTER_LINEAR)
+		res, thumb_buf = cv2.imencode('.png', im_ar)
+		# '.jpeg' etc are permitted
+		self.poster = base64.b64encode( thumb_buf ).decode('utf8')
 
 
 
