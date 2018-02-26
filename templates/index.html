@@ -11,7 +11,7 @@
 <body>
   {% for item in items %}
 	<div class="item" id={{ item.name }} onclick="open_media('{{ item.file }}')">
-		<img src={{ item.poster }} />{{ item.name }}<p>
+		<img src={{ item.poster }} />{{ item.name }}
 	</div>
   {% endfor %}
 </body>
