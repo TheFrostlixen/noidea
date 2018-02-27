@@ -31,7 +31,7 @@ def play():
 	media_name = request.args.get('media', default='error', type=str)
 	
 	system('"'+media_name+'"')
-
+	
 	template = env.get_template('play.html')
 	return template.render(media_name=media_name)
 
