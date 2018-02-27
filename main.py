@@ -5,7 +5,7 @@ import jinja2
 import json
 from flask import Flask, request
 from os import walk, system
-from os.path import splitext, basename, isfile, abspath
+from os.path import splitext, basename, isfile
 
 
 movie_dir = r"./static/movies/"
@@ -28,9 +28,11 @@ def index():
 
 @app.route("/play/")
 def play():
-	template = env.get_template('play.html')
 	media_name = request.args.get('media', default='error', type=str)
-	#system('start "' + media_name + '"')
+	
+	system('"'+media_name+'"')
+
+	template = env.get_template('play.html')
 	return template.render(media_name=media_name)
 
 @app.route("/shows/")
