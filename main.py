@@ -52,17 +52,17 @@ def get_all_movies():
 
 def get_files(dirname):
 	files = []
-	for (base_dir, b, filenames) in walk( abspath(dirname) ):
+	for (base_dir, b, filenames) in walk( dirname ):
 		files.extend(filenames)
 		break
-	return [base_dir + "\\" + c for c in files]
+	return [base_dir + c for c in files]
 
 def get_dirs(dirname):
 	dirs  = []
-	for (base_dir, dirnames, c) in walk( abspath(dirname) ):
+	for (base_dir, dirnames, c) in walk( dirname ):
 		dirs.extend(dirnames)
 		break
-	return [base_dir + "\\" + c for c in dirs]
+	return [base_dir + c for c in dirs]
 
 
 ### CLASSES ###
