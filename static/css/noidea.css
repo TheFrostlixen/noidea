@@ -1,5 +1,5 @@
 div.item {
-	width:auto;
+	width:240px;
 	height:auto;
 	background:#bbb;
 	float:left;
@@ -11,4 +11,8 @@ div.item {
 
 body {
 	background-image: url('./bg.png')
+}
+
+.whitetext {
+	color: white;
 }

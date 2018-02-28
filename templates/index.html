@@ -4,13 +4,31 @@
 	function open_media(media_name) {
 		window.open('play/?media=' + media_name, '_blank');
 	}
+
+	function update_list() {
+		var searchName = document.getElementById('search-bar').value;
+		
+		var itemlist = document.querySelectorAll('#media-table')[0].children;
+		for (i = 0; i < itemlist.length; i++) {
+			var searchResult = itemlist[i].outerText.toLowerCase().trim().indexOf( searchName.toLowerCase() );
+			if (searchResult < 0) {
+				itemlist[i].style.display = 'none';
+			}
+			else {
+				itemlist[i].style.display = '';
+			}
+		}
+	}
 	</script>
 	<link rel="stylesheet" href="./static/css/noidea.css">
 </head>
 <body>
-  {% for item in items %}
-	<div class="item" onclick="open_media('{{ item.file }}')">
-		<img src="{{ item.poster }}" /><br />{{ item.name }}
+	<p class="whitetext">Search: <input id="search-bar" onkeyup="update_list()"></p>
+	<div id="media-table">
+		{% for item in items %}
+		<div class="item" onclick="open_media('{{ item.file }}')">
+			<img src="{{ item.poster }}" /><br />{{ item.name }}
+		</div>
+		{% endfor %}
 	</div>
-  {% endfor %}
 </body>

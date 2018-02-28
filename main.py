@@ -1,5 +1,4 @@
 # Non-buffered Ostensibly Instant Dedicated Everything Archive
-import base64
 import cv2
 import jinja2
 import json
@@ -86,11 +85,10 @@ class Movie:
 		
 		vcap = cv2.VideoCapture(filename)
 		res, im_ar = vcap.read()
-		while im_ar.mean() < 10 and res:
+		while im_ar.mean() < threshold and res:
 			  res, im_ar = vcap.read()
-		im_ar = cv2.resize(im_ar, (240, 320), 0, 0, cv2.INTER_LINEAR)
+		im_ar = cv2.resize(im_ar, (thumb_width, thumb_height), 0, 0, cv2.INTER_LINEAR)
 		cv2.imwrite(poster_name, im_ar)
-		print('created poster ' + poster_name)
 
 	def find_poster(self, filename, name):
 		poster_name = poster_dir + name + ".png"
