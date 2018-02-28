@@ -1,5 +1,14 @@
 function open_media(media_name) {
-	window.open('play/?media=' + media_name, '_blank');
+	var dataDictionary = []; // create an empty array
+
+	dataDictionary.push({
+		media_name: media_name
+	});
+
+	var request = new XMLHttpRequest();
+	request.open('POST', '/play', true);
+	request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+	request.send(JSON.stringify(dataDictionary));
 }
 
 function update_list() {

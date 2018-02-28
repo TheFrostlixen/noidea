@@ -2,9 +2,12 @@
 import cv2
 import jinja2
 import json
+import subprocess
+import sys
 from flask import Flask, request
 from os import walk, system
 from os.path import splitext, basename, isfile
+from pathlib import Path
 
 
 movie_dir = r"./static/movies/"
@@ -25,12 +28,12 @@ def index():
 	itemlist = get_all_movies()
 	return template.render(items=itemlist)
 
-@app.route("/play/")
+@app.route("/play", methods=['POST'])
 def play():
-	media_name = request.args.get('media', default='error', type=str)
-	
-	system('"'+media_name+'"')
-	
+	form_information = request.get_json(silent=True)
+	media_name = form_information[0]['media_name']
+	path = Path(media_name)
+	subprocess.call(str(path.resolve()), shell=True)
 	template = env.get_template('play.html')
 	return template.render(media_name=media_name)
 
