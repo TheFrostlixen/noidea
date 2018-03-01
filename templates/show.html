@@ -6,15 +6,10 @@
 <body>
 	<p class="whitetext">Search: <input id="search-bar" onkeyup="update_list()"></p>
 	<div id="media-table">
-		{% for item in movies %}
+		{% for item in show_list %}
 		<div class="item" onclick="open_media('{{ item.file }}')">
 			<img src="{{ item.poster }}" /><br />{{ item.name }}
 		</div>
-		{% endfor %}
-		{% for item in shows %}
-		<a href="/show/?id={{ item.name }}"><div class="item">
-			<img src="{{ item.poster }}" /><br />{{ item.name }}
-		</div></a>
 		{% endfor %}
 	</div>
 </body>

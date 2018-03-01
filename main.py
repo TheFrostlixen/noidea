@@ -1,17 +1,16 @@
 # Non-buffered Ostensibly Instant Dedicated Everything Archive
 import cv2
 import jinja2
-import json
 import subprocess
-import sys
 from flask import Flask, request
 from os import walk, system
 from os.path import splitext, basename, isfile
 from pathlib import Path
 
 
+shows_dir = r"./static/shows/"
 movie_dir = r"./static/movies/"
-poster_dir = r"./static/movies/posters/"
+poster_dir = r"./static/posters/"
 
 app = Flask(__name__)
 env = jinja2.Environment(
@@ -23,10 +22,10 @@ env = jinja2.Environment(
 ### PAGES ###
 @app.route("/")
 def index():
-	template = env.get_template('index.html')
+	movies, shows = build_index(movie_dir)
 	
-	itemlist = get_all_movies()
-	return template.render(items=itemlist)
+	template = env.get_template('index.html')
+	return template.render(movies=movies, shows=shows)
 
 @app.route("/play", methods=['POST'])
 def play():
@@ -34,25 +33,35 @@ def play():
 	media_name = form_information[0]['media_name']
 	path = Path(media_name)
 	subprocess.call(str(path.resolve()), shell=True)
+	
 	template = env.get_template('play.html')
 	return template.render(media_name=media_name)
 
-@app.route("/shows/")
-def json_test():
-	shows = ['House MD', 'Bojack Horseman']
-	return env.get_template('index.html').render(
-		shows=map(json.dumps, shows)
-	)
+@app.route("/show/")
+def show():
+	id = request.args.get('id', default='error', type=str)
+	
+	show_list, a = build_index( shows_dir + id + '/')
+	
+	template = env.get_template('show.html')
+	return template.render(show_list=show_list)
 
 
 ### FUNCTIONS ###
-def get_all_movies():
-	files = get_files( movie_dir )
-	movie_list = []
+def build_index(target_dir):
+	files = get_files( target_dir )
+	movies = []
 	for file in files:
 		item = Movie(file)
-		movie_list.append(item)
-	return movie_list
+		movies.append(item)
+	
+	shows = []
+	dirs = get_dirs( shows_dir )
+	for dir in dirs:
+		item = Show(dir)
+		shows.append(item)
+	
+	return movies, shows
 
 def get_files(dirname):
 	files = []
@@ -99,6 +108,21 @@ class Movie:
 			self.generate_poster(filename, poster_name)
 		
 		self.poster = poster_name
+
+class Show:
+	def __init__(self, name, poster, dir):
+		self.name = name
+		self.poster = poster
+		self.dir = dir
+		
+	def __init__(self, dir):
+		self.dir = dir
+		self.name = basename(dir)
+		print("Processing " + self.name)
+		self.find_poster(dir, self.name)
+
+	def find_poster(self, dirname, name):
+		self.poster = r"./static/posters/Labware Assembly Height Weirdness.png"
 
 
 
