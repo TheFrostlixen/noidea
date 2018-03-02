@@ -8,9 +8,13 @@ from os.path import splitext, basename, isfile
 from pathlib import Path
 
 
-shows_dir  = r"./static/shows/"
-movie_dir  = r"./static/movies/"
-poster_dir = r"./static/posters/"
+SHOWS_DIR  = r"./static/shows/"
+MOVIE_DIR  = r"./static/movies/"
+POSTER_DIR = r"./static/posters/"
+VCAP_THRESHOLD = 10
+THUMB_WIDTH = 120
+THUMB_HEIGHT = 160
+THUMB_FILETYPE = ".png"
 
 app = Flask(__name__)
 env = jinja2.Environment(
@@ -22,7 +26,7 @@ env = jinja2.Environment(
 ### PAGES ###
 @app.route("/")
 def index():
-	movies, shows = build_index(movie_dir)
+	movies, shows = build_index(MOVIE_DIR)
 	
 	template = env.get_template('index.html')
 	return template.render(movies=movies, shows=shows)
@@ -31,7 +35,7 @@ def index():
 def show():
 	id = request.args.get('id', default='error', type=str)
 	
-	show_list = build_show_index(shows_dir, id)
+	show_list = build_show_index(SHOWS_DIR, id)
 	
 	template = env.get_template('show.html')
 	return template.render(show_name=id, show_list=show_list)
@@ -56,7 +60,7 @@ def build_index(target_dir):
 		movies.append(item)
 	
 	shows = []
-	dirs = get_dirs( shows_dir )
+	dirs = get_dirs( SHOWS_DIR )
 	for dir in dirs:
 		item = Show(dir)
 		shows.append(item)
@@ -100,19 +104,15 @@ class Movie:
 		self.find_poster(file, self.name)
 		
 	def generate_poster(self, filename, poster_name):
-		threshold = 10
-		thumb_width = 120
-		thumb_height = 160
-		
 		vcap = cv2.VideoCapture(filename)
 		res, im_ar = vcap.read()
-		while im_ar.mean() < threshold and res:
+		while im_ar.mean() < VCAP_THRESHOLD and res:
 			  res, im_ar = vcap.read()
-		im_ar = cv2.resize(im_ar, (thumb_width, thumb_height), 0, 0, cv2.INTER_LINEAR)
+		im_ar = cv2.resize(im_ar, (THUMB_WIDTH, THUMB_HEIGHT), 0, 0, cv2.INTER_LINEAR)
 		cv2.imwrite(poster_name, im_ar)
 		
 	def find_poster(self, filename, name):
-		poster_name = poster_dir + name + ".png"
+		poster_name = POSTER_DIR + name + THUMB_FILETYPE
 		if not isfile(poster_name):
 			self.generate_poster(filename, poster_name)
 		
@@ -130,19 +130,15 @@ class Show:
 		self.find_poster(dir, self.name)
 		
 	def generate_poster(self, filename, poster_name):
-		threshold = 10
-		thumb_width = 120
-		thumb_height = 160
-		
 		vcap = cv2.VideoCapture(filename)
 		res, im_ar = vcap.read()
-		while im_ar.mean() < threshold and res:
+		while im_ar.mean() < VCAP_THRESHOLD and res:
 			  res, im_ar = vcap.read()
-		im_ar = cv2.resize(im_ar, (thumb_width, thumb_height), 0, 0, cv2.INTER_LINEAR)
+		im_ar = cv2.resize(im_ar, (THUMB_WIDTH, THUMB_HEIGHT), 0, 0, cv2.INTER_LINEAR)
 		cv2.imwrite(poster_name, im_ar)
 		
 	def find_poster(self, dirname, name):
-		poster_name = poster_dir + name + ".png"
+		poster_name = POSTER_DIR + name + THUMB_FILETYPE
 		
 		if not isfile(poster_name):
 			for (base_dir, b, filenames) in walk( dirname ):
@@ -164,7 +160,7 @@ class Episode:
 		self.find_poster(file, show_id)
 		
 	def find_poster(self, filename, show_id):
-		poster_name = poster_dir + show_id + ".png"
+		poster_name = POSTER_DIR + show_id + THUMB_FILETYPE
 		
 		self.poster = poster_name
 
