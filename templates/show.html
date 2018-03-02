@@ -1,14 +1,14 @@
 <head>
-	<title>noidea</title>
-	<script src="./static/res/noidea.js"></script>
-	<link rel="stylesheet" href="./static/res/noidea.css">
+	<title>noidea - {{ show_name }}</title>
+	<script src="/static/res/noidea.js"></script>
+	<link rel="stylesheet" href="/static/res/noidea.css">
 </head>
 <body>
 	<p class="whitetext">Search: <input id="search-bar" onkeyup="update_list()"></p>
 	<div id="media-table">
 		{% for item in show_list %}
 		<div class="item" onclick="open_media('{{ item.file }}')">
-			<img src="{{ item.poster }}" /><br />{{ item.name }}
+			<img src="/{{ item.poster }}" /><br />{{ item.name }}
 		</div>
 		{% endfor %}
 	</div>
