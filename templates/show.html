@@ -4,7 +4,11 @@
 	<link rel="stylesheet" href="/static/res/noidea.css">
 </head>
 <body>
-	<p class="whitetext">Search: <input id="search-bar" onkeyup="update_list()"></p>
+	<p class="text">Search: <input id="search-bar" onkeyup="update_list()">
+		<button id="clear" onclick="clear_search()">x</button>
+		<button id="random" onclick="play_random()">Random</button>
+		<a href="/" class="homepage">Homepage</a>
+	</p>
 	<div id="media-table">
 		{% for item in show_list %}
 		<div class="item" onclick="open_media('{{ item.file }}')">

@@ -25,3 +25,26 @@ function update_list() {
 		}
 	}
 }
+
+function clear_search() {
+	document.getElementById('search-bar').value = "";
+	update_list();
+}
+
+function play_random() {
+	var itemlist = [];
+	
+	Array.from(document.getElementsByClassName("item")).forEach(function(item) {
+		if (!(isHidden(item))) {
+			itemlist.push(item);
+		}
+	});
+	
+	var rand_index = Math.floor(Math.random() * itemlist.length);
+	eval(itemlist[rand_index].onclick());
+}
+
+function isHidden(el) {
+	var style = window.getComputedStyle(el);
+	return ((style.display === 'none') || (style.visibility === 'hidden'))
+}
