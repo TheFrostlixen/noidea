@@ -1,5 +1,5 @@
-div.item {
-	width:130px;
+div.item, div.subdir {
+	width:128px;
 	height:auto;
 	background:#bbb;
 	float:left;
@@ -8,17 +8,11 @@ div.item {
 	font-size:16px;
 	display:inline-block;
 	color:#000;
+	border-radius:4px;
 }
 
 div.subdir {
-	width:130px;
-	height:auto;
 	background:#5483b3;
-	float:left;
-	margin:5px;
-	text-align:center;
-	font-size:16px;
-	display:inline-block;
 	color:#ddd;
 	text-decoration:underline;
 }
@@ -47,6 +41,16 @@ p {
 	margin:-5px;
 }
 
-a:hover, div.subdir:hover {
+a:hover {
 	color:yellow;
+}
+
+div.item:hover {
+	color:yellow;
+	background:#888;
+}
+
+div.subdir:hover {
+	color:yellow;
+	background:#3261a8;
 }
